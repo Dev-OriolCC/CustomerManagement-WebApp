@@ -1,0 +1,13 @@
+  .oooooo.                            .                                                     ooo        ooooo                                                .                 .o.                             oooo   o8o                          .    o8o
+ d8P'  `Y8b                         .o8                                                     `88.       .888'                                              .o8                .888.                            `888   `"'                        .o8    `"'
+888          oooo  oooo   .oooo.o .o888oo  .ooooo.  ooo. .oo.  .oo.    .ooooo.  oooo d8b     888b     d'888   .oooo.    .oooooooo ooo. .oo.    .ooooo.  .o888oo             .8"888.     oo.ooooo.  oo.ooooo.   888  oooo   .ooooo.   .oooo.   .o888oo oooo   .ooooo.  ooo. .oo.
+888          `888  `888  d88(  "8   888   d88' `88b `888P"Y88bP"Y88b  d88' `88b `888""8P     8 Y88. .P  888  `P  )88b  888' `88b  `888P"Y88b  d88' `88b   888              .8' `888.     888' `88b  888' `88b  888  `888  d88' `"Y8 `P  )88b    888   `888  d88' `88b `888P"Y88b
+888           888   888  `"Y88b.    888   888   888  888   888   888  888ooo888  888         8  `888'   888   .oP"888  888   888   888   888  888ooo888   888   8888888   .88ooo8888.    888   888  888   888  888   888  888        .oP"888    888    888  888   888  888   888
+`88b    ooo   888   888  o.  )88b   888 . 888   888  888   888   888  888    .o  888         8    Y     888  d8(  888  `88bod8P'   888   888  888    .o   888 .          .8'     `888.   888   888  888   888  888   888  888   .o8 d8(  888    888 .  888  888   888  888   888
+ `Y8bood8P'   `V88V"V8P' 8""888P'   "888" `Y8bod8P' o888o o888o o888o `Y8bod8P' d888b       o8o        o888o `Y888""8o `8oooooo.  o888o o888o `Y8bod8P'   "888"         o88o     o8888o  888bod8P'  888bod8P' o888o o888o `Y8bod8P' `Y888""8o   "888" o888o `Y8bod8P' o888o o888o
+                                                                                                                       d"     YD                                                         888        888
+                                                                                                                       "Y88888P'                                                        o888o      o888o
+
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}
+Author, Oriol
