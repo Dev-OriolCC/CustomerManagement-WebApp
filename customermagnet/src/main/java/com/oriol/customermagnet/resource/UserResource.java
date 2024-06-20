@@ -43,6 +43,7 @@ import static org.springframework.security.authentication.UsernamePasswordAuthen
 @RestController
 @RequestMapping(path = "/api/v1/user")
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserResource {
 
     private final UserService userService;
@@ -207,6 +208,7 @@ public class UserResource {
     }
     @GetMapping("/resetpassword/{email}") //TODO: Sends ResetPassword link to email
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) {
+        System.out.println("Here...");
         userService.resetPassword(email);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()

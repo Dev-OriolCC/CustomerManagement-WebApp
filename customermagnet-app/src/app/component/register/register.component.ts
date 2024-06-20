@@ -19,7 +19,7 @@ export class RegisterComponent {
 
   register(registerForm: NgForm) {
     console.log(registerForm.value)
-    this.registerState$ = this.userService.resetPassword$(registerForm.value)
+    this.registerState$ = this.userService.save$(registerForm.value)
     .pipe(map(response => {
       console.log(response)
       registerForm.reset()

@@ -20,6 +20,7 @@ public class CustomermagnetApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CustomermagnetApplication.class, args);
 	}
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(STRENGTH);

@@ -10,6 +10,7 @@ import com.oriol.customermagnet.repository.RoleRepository;
 import com.oriol.customermagnet.repository.UserRepository;
 import com.oriol.customermagnet.request.LoginForm;
 import com.oriol.customermagnet.rowmapper.UserRowMapper;
+import com.oriol.customermagnet.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -32,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static com.oriol.customermagnet.enumeration.RoleType.ROLE_USER;
 import static com.oriol.customermagnet.enumeration.VerificationType.ACCOUNT;
@@ -50,6 +52,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     private final NamedParameterJdbcTemplate jdbc;
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
+    private final EmailService emailService;
     private final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
     @Override
@@ -70,6 +73,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_QUERY,Map.of("user_id",user.getId(),"url",verificationUrl));
             //6. Send email to user with url
             //emailService.sendVerificationEmail(user.getFirst_name(), user.getEmail(), verificationUrl, ACCOUNT);
+            sendEmail(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
             user.setNon_locked(true);
             // 7. Return user
@@ -77,6 +81,18 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         } catch (Exception exception) {
             throw new ApiException("An error has occurred. Please, try again. " );
         }
+    }
+
+    private void sendEmail(String firstName, String email, String verificationUrl, VerificationType verificationType) {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            try {
+                log.error("1. Send email....");
+                emailService.sendVerificationEmail(firstName, email, verificationUrl, verificationType);
+                log.error("Email sent to: "+email);
+            } catch (Exception exception) {
+                throw new ApiException("Error. Could not send email.");
+            }
+        });
     }
 
 
@@ -190,6 +206,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             jdbc.update(DELETE_RESET_PASSWORD_URL_BY_USER_ID_QUERY,Map.of("id",user.getId()));
             jdbc.update(INSERT_RESET_PASSWORD_URL_QUERY,Map.of("userId",user.getId(), "url", verificationUrl, "expirationDate", expirationDate));
             //TODO Send Email
+            sendEmail(user.getFirstName(), email, verificationUrl, PASSWORD);
             log.info("verificationUrl: {}", verificationUrl);
         } catch (Exception exception) {
             throw new ApiException("An error has occurred. Please, try again. " );

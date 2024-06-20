@@ -17,7 +17,7 @@ export class ResetpasswordComponent {
   constructor(private userService: UserService) { };
 
   resetPassword(resetPasswordForm: NgForm) {
-    console.log(resetPasswordForm.value)
+    console.log(resetPasswordForm.value.email)
     this.resetPasswordState$ = this.userService.resetPassword$(resetPasswordForm.value.email)
       .pipe(map(response => {
         console.log("Response: " + response)
