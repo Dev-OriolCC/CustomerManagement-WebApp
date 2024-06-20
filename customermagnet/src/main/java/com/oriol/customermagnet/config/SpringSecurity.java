@@ -34,8 +34,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SpringSecurity {
-    private final static String[] PUBLIC_URLS = { "/api/v1/user/login/**", "/api/v1/user/image/**", //"/api/v1/user/**",
-            "/api/v1/user/verify/code/**", "/api/v1/user/resetpassword/**",
+    private final static String[] PUBLIC_URLS = { "/api/v1/user/login/**", "/api/v1/user/register/**", "/api/v1/user/image/**", //"/api/v1/user/**", "/api/v1/user/update/password"
+            "/api/v1/user/verify/code/**", "/api/v1/user/reset/password/**", "/api/v1/user/resetpassword/**", "/api/v1/user/verify/password/**", "/api/v1/user/verify/account/**",
     "/api/v1/user/error", "/api/v1/user/verify/password/**", "/api/v1/user/verify/account/**", "/api/v1/user/refresh/token/**" };
 //    private final static String[] PUBLIC_URLS = { "/**" };
 

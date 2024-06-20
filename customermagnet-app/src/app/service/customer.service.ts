@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse, Profile, Page, CustomerState } from '../interface/appstates';
 import { User } from '../interface/user';
@@ -12,7 +12,7 @@ import { Stats } from '../interface/stats';
   providedIn: 'root'
 })
 export class CustomerService {
-  
+
   private readonly server: string = "http://localhost:8080";
   //private jwtHelper = new JwtHelperService();
 
@@ -20,45 +20,55 @@ export class CustomerService {
 
 
   customersList$ = (page: number = 0, size: number = 10) => <Observable<CustomHttpResponse<Customer & User & Stats>>>
-  this.http.get<CustomHttpResponse<Customer & User & Stats>>
-    (`${this.server}/api/v1/customer/list?page=${page}&?size=${size}`, {})
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    )
+    this.http.get<CustomHttpResponse<Customer & User & Stats>>
+      (`${this.server}/api/v1/customer/list?page=${page}&?size=${size}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
   customerView$ = (id: number) => <Observable<CustomHttpResponse<CustomerState>>>
-  this.http.get<CustomHttpResponse<CustomerState>>
-    (`${this.server}/api/v1/customer/get/${id}`, {})
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    )
+    this.http.get<CustomHttpResponse<CustomerState>>
+      (`${this.server}/api/v1/customer/get/${id}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
+  downloadReport$ = () => <Observable<HttpEvent<Blob>>>
+    this.http.get(`${this.server}/api/v1/customer/download/report`, {
+      reportProgress: true, observe: 'events', responseType: 'blob'
+    })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
 
   searchCustomers$ = (name: string = "", page: number = 0) => <Observable<CustomHttpResponse<Customer & User>>>
-  this.http.get<CustomHttpResponse<Customer & User >>
-    (`${this.server}/api/v1/customer/search?name=${name}&page=${page}`, {})
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    )
-  
+    this.http.get<CustomHttpResponse<Customer & User>>
+      (`${this.server}/api/v1/customer/search?name=${name}&page=${page}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
 
   createCustomer$ = (customer: Customer) => <Observable<CustomHttpResponse<Customer & User>>>
-  this.http.post<CustomHttpResponse<Customer & User>>
-    (`${this.server}/api/v1/customer/create`, customer)
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    )
+    this.http.post<CustomHttpResponse<Customer & User>>
+      (`${this.server}/api/v1/customer/create`, customer)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
   updateCustomer$ = (customer: Customer) => <Observable<CustomHttpResponse<CustomerState>>>
-  this.http.put<CustomHttpResponse<CustomerState>>
-    (`${this.server}/api/v1/customer/update`, customer)
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    )
+    this.http.put<CustomHttpResponse<CustomerState>>
+      (`${this.server}/api/v1/customer/update`, customer)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
   private handleError(error: HttpErrorResponse): Observable<any> {
     let errorMessage: string;
@@ -66,7 +76,7 @@ export class CustomerService {
       // Frontend Error
       errorMessage = `A client error occurred: ${error.error.message}`;
     } else {
-      if(error.error.reason) {
+      if (error.error.reason) {
         // Backend Error
         errorMessage = error.error.reason;
       } else {
@@ -74,7 +84,7 @@ export class CustomerService {
         errorMessage = `An error occurred: ${error.status}`;
       }
     }
-      return throwError(() => errorMessage);
+    return throwError(() => errorMessage);
   }
 
 }

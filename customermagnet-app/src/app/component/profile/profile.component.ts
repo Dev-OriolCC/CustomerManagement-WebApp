@@ -84,7 +84,7 @@ export class ProfileComponent implements OnInit {
           })
         ) 
     } else {
-      this.isLoadingSubject.next(false)
+      
       console.log("Passwords dont match")
       passwordForm.reset();
     }

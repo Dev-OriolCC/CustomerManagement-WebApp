@@ -8,10 +8,7 @@ import com.oriol.customermagnet.enumeration.EventType;
 import com.oriol.customermagnet.event.NewUserEvent;
 import com.oriol.customermagnet.exception.ApiException;
 import com.oriol.customermagnet.provider.TokenProvider;
-import com.oriol.customermagnet.request.AccountSettingsForm;
-import com.oriol.customermagnet.request.LoginForm;
-import com.oriol.customermagnet.request.LoginRequest;
-import com.oriol.customermagnet.request.UpdatePasswordForm;
+import com.oriol.customermagnet.request.*;
 import com.oriol.customermagnet.service.EventService;
 import com.oriol.customermagnet.service.RoleService;
 import com.oriol.customermagnet.service.UserService;
@@ -65,33 +62,15 @@ public class UserResource {
     }
 
 
-    private UserDTO authenticate(String email, String password) {
-        try {
-            if(userService.getUserByEmail(email) != null) {
-                publisher.publishEvent(new NewUserEvent(EventType.LOGIN_ATTEMPT, email));
-            }
-            Authentication authentication = authenticationManager.authenticate(unauthenticated(email, password));
-            UserDTO loggedInUser = getLoggedInUser(authentication);
-            if(!loggedInUser.isUsing_nfa()) {
-                publisher.publishEvent(new NewUserEvent(EventType.LOGIN_ATTEMPT_SUCCESS, email));
-            }
-            return loggedInUser;
-        } catch (Exception e) {
-            publisher.publishEvent(new NewUserEvent(EventType.LOGIN_ATTEMPT_FAILED, email));
-            //processError(request, response, e);
-            throw new ApiException(e.getMessage());
-        }
-    }
-
-
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> create(@RequestBody @Valid User user) {
+        System.out.println("YES");
         UserDTO userDTO = userService.createUser(user);
         return ResponseEntity.created(getUri()).body(
                 HttpResponse.builder()
                         .timestamp(LocalDateTime.now().toString())
                         .data(Map.of("user", userDTO))
-                        .message("User created")
+                        .message("Account successfully created: "+userDTO.getFirstName())
                         .status(HttpStatus.CREATED)
                         .statusCode(HttpStatus.CREATED.value())
                         .build());
@@ -130,7 +109,7 @@ public class UserResource {
                         .statusCode(HttpStatus.OK.value())
                         .build());
     }
-    @PatchMapping("/update/password")
+    @PatchMapping("/update/password") //TODO: Update password from PROFILE
     public ResponseEntity<HttpResponse> updatePassword(Authentication authentication, @RequestBody @Valid UpdatePasswordForm form) {
         UserDTO userDTO = getAuthenticatedUser(authentication);
         userService.updatePassword(userDTO.getId(), form.getCurrentPassword(), form.getNewPassword(), form.getConfirmNewPassword());
@@ -185,6 +164,24 @@ public class UserResource {
                         .statusCode(HttpStatus.OK.value())
                         .build());
     }
+    @PatchMapping("/update/profile/image")
+    public ResponseEntity<HttpResponse> updateProfileImage(Authentication authentication, @RequestParam("image") MultipartFile image) {
+        UserDTO userDTO = getAuthenticatedUser(authentication);
+        userService.updateProfileImage(userDTO, image);
+        publisher.publishEvent(new NewUserEvent(EventType.PROFILE_PICTURE_UPDATE, userDTO.getEmail()));
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timestamp(LocalDateTime.now().toString())
+                        .data(Map.of(
+                                "user", userService.getUserById(userDTO.getId()),
+                                "roles", roleService.getRoles(),
+                                "events", eventService.getUserEventsByUserId(userDTO.getId())
+                        ))
+                        .message("Profile image updated successfully")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .build());
+    }
 
     @PatchMapping("/toggleMfa")
     public ResponseEntity<HttpResponse> toggleMfa(Authentication authentication) {
@@ -204,29 +201,11 @@ public class UserResource {
                         .build());
     }
 
-    @PatchMapping("/update/profile/image")
-    public ResponseEntity<HttpResponse> updateProfileImage(Authentication authentication, @RequestParam("image") MultipartFile image) {
-        UserDTO userDTO = getAuthenticatedUser(authentication);
-        userService.updateProfileImage(userDTO, image);
-        publisher.publishEvent(new NewUserEvent(EventType.PROFILE_PICTURE_UPDATE, userDTO.getEmail()));
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timestamp(LocalDateTime.now().toString())
-                        .data(Map.of(
-                                "user", userService.getUserById(userDTO.getId()),
-                                "roles", roleService.getRoles(),
-                                "events", eventService.getUserEventsByUserId(userDTO.getId())
-                        ))
-                        .message("Profile image updated successfully")
-                        .status(HttpStatus.OK)
-                        .statusCode(HttpStatus.OK.value())
-                        .build());
-    }
     @GetMapping(value = "/image/{imageName}", produces = IMAGE_PNG_VALUE)
     public byte[] getUserProfileImage(@PathVariable("imageName") String imageName) throws IOException {
         return Files.readAllBytes(Paths.get(System.getProperty("user.home") + "/Downloads/images/"+ imageName));
     }
-    @GetMapping("/resetpassword/{email}")
+    @GetMapping("/resetpassword/{email}") //TODO: Sends ResetPassword link to email
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) {
         userService.resetPassword(email);
         return ResponseEntity.ok().body(
@@ -237,23 +216,10 @@ public class UserResource {
                         .statusCode(HttpStatus.OK.value())
                         .build());
     }
-
-    @GetMapping("/verify/password/{key}")
-    public ResponseEntity<HttpResponse> veriyfPasswordKey(@PathVariable("key") String key) {
-        UserDTO userDTO = userService.veriyfPasswordKey(key);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timestamp(LocalDateTime.now().toString())
-                        .data(Map.of("user", userDTO))
-                        .message("Password verified.")
-                        .status(HttpStatus.OK)
-                        .statusCode(HttpStatus.OK.value())
-                        .build());
-    }
-    @PostMapping("/reset/password/{key}/{password}/{confirmPassword}")
-    public ResponseEntity<HttpResponse> resetPassword(@PathVariable("key") String key, @PathVariable("password") String password,
-                                                     @PathVariable("confirmPassword") String confirmPassword) {
-        userService.renewPassword(key, password, confirmPassword);
+    @PostMapping("/reset/password/") //TODO: Update(Reset) Password from ResetForm
+    public ResponseEntity<HttpResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest form) {
+        System.out.println("1. userId"+ form.getUserId());
+        userService.renewPassword(form.getUserId(), form.getPassword(), form.getConfirmPassword());
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timestamp(LocalDateTime.now().toString())
@@ -278,9 +244,10 @@ public class UserResource {
                         .statusCode(HttpStatus.OK.value())
                         .build());
     }
-
+    // --- Verify Endpoints ---
     @GetMapping("/verify/account/{key}")
     public ResponseEntity<HttpResponse> verifyAccount(@PathVariable("key") String key) {
+        System.out.println("Verified!");
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timestamp(LocalDateTime.now().toString())
@@ -289,6 +256,22 @@ public class UserResource {
                         .statusCode(HttpStatus.OK.value())
                         .build());
     }
+
+    @GetMapping("/verify/password/{key}")
+    public ResponseEntity<HttpResponse> veriyfPasswordKey(@PathVariable("key") String key) {
+        System.out.println("Verified!");
+        UserDTO userDTO = userService.veriyfPasswordKey(key);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timestamp(LocalDateTime.now().toString())
+                        .data(Map.of("user", userDTO))
+                        .message("Password verified.")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .build());
+    }
+
+    // --- ---------------------  ---
 
     @GetMapping("/refresh/token")
     public ResponseEntity<HttpResponse> refreshToken(HttpServletRequest request) {
@@ -318,15 +301,6 @@ public class UserResource {
                         .build());
     }
 
-    private boolean isHeaderAndTokenValid(HttpServletRequest request) {
-        return request.getHeader(AUTHORIZATION) != null
-                && request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
-                && tokenProvider.isTokenValid(tokenProvider.getSubject(request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length()), request),
-                request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length())
-        );
-    }
-
-
     @RequestMapping("/error")
     public ResponseEntity<HttpResponse> handleError(HttpServletRequest request) {
         System.out.println("Llegue! ");
@@ -337,9 +311,43 @@ public class UserResource {
                 .statusCode(NOT_FOUND.value())
                 .build(), NOT_FOUND);
     }
+
+    /**
+     * Private functions
+     * */
+    private UserDTO authenticate(String email, String password) {
+        try {
+            if(userService.getUserByEmail(email) != null) {
+                publisher.publishEvent(new NewUserEvent(EventType.LOGIN_ATTEMPT, email));
+            }
+            Authentication authentication = authenticationManager.authenticate(unauthenticated(email, password));
+            UserDTO loggedInUser = getLoggedInUser(authentication);
+            if(!loggedInUser.isUsing_nfa()) {
+                publisher.publishEvent(new NewUserEvent(EventType.LOGIN_ATTEMPT_SUCCESS, email));
+            }
+            return loggedInUser;
+        } catch (Exception e) {
+            publisher.publishEvent(new NewUserEvent(EventType.LOGIN_ATTEMPT_FAILED, email));
+            //processError(request, response, e);
+            throw new ApiException(e.getMessage());
+        }
+    }
+    private boolean isHeaderAndTokenValid(HttpServletRequest request) {
+        return request.getHeader(AUTHORIZATION) != null
+                && request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
+                && tokenProvider.isTokenValid(tokenProvider.getSubject(request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length()), request),
+                request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length())
+        );
+    }
     private URI getUri() {
         return URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/get/<userId>").toUriString());
     }
+
+
+    private UserPrincipal getUserPrincipal(UserDTO userDTO) {
+        return new UserPrincipal(toUser(userService.getUserByEmail(userDTO.getEmail())), roleService.getRoleByUserId(userDTO.getId()));
+    }
+
     private ResponseEntity<HttpResponse> sendResponse(UserDTO userDTO) {
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
@@ -353,10 +361,6 @@ public class UserResource {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .build());
-    }
-
-    private UserPrincipal getUserPrincipal(UserDTO userDTO) {
-        return new UserPrincipal(toUser(userService.getUserByEmail(userDTO.getEmail())), roleService.getRoleByUserId(userDTO.getId()));
     }
 
     private ResponseEntity<HttpResponse> sendVerificationCode(UserDTO userDTO) {

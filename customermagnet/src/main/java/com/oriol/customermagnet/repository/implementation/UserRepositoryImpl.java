@@ -114,7 +114,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     }
 
     private String getVerificationUrl(String key, String type) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/user/verify/"+type+"/"+key).toUriString();
+        return "http://localhost:4200/api/v1/user/verify/"+type.toLowerCase()+"/"+key;
+        //return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/user/verify/"+type+"/"+key).toUriString();
     }
 
     @Override
@@ -199,6 +200,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     public User veriyfPasswordKey(String key) {
         if(isLinkExpired(key, PASSWORD)) throw new ApiException("This link has expired. Please try again.");
         try {
+            System.out.println("Step 2.");
             User user = jdbc.queryForObject(SELECT_USER_BY_PASSWORD_URL_QUERY, Map.of("url", getVerificationUrl(key, PASSWORD.getType())), new UserRowMapper());
             //TODO: DELETE
             return user;
@@ -216,6 +218,21 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             //jdbc.update(DELETE_RESET_PASSWORD_URL_BY_USER_ID_QUERY,Map.of("id",user.getId()));
             jdbc.update(INSERT_RENEW_PASSWORD_QUERY,Map.of("password", encoder.encode(password), "url", getVerificationUrl(key, PASSWORD.getType())));
             jdbc.update(DELETE_RESET_PASSWORD_URL_QUERY, Map.of("url", getVerificationUrl(key, PASSWORD.getType())));
+        } catch (Exception exception) {
+            throw new ApiException("An error has occurred. Please, try again.");
+        }
+    }
+
+    @Override
+    public void renewPassword(Long userId, String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) throw new ApiException("Passwords don't match!");
+        try {
+            //jdbc.update(DELETE_RESET_PASSWORD_URL_BY_USER_ID_QUERY,Map.of("id",user.getId()));
+            //TODO: CHECK
+            System.out.println("userId"+ userId);
+            System.out.println("password"+ encoder.encode(password));
+            jdbc.update(UPDATE_USER_PASSWORD_BY_ID_QUERY,Map.of("id", userId,"password", encoder.encode(password)));
+            //jdbc.update(DELETE_RESET_PASSWORD_URL_BY_USER_ID_QUERY, Map.of("id", userId));
         } catch (Exception exception) {
             throw new ApiException("An error has occurred. Please, try again.");
         }
@@ -276,8 +293,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         User user = getUserByEmail(email);
         if(user.getPhone().isBlank()) throw new ApiException("You need a phone to update MFA.");
         try {
-            user.setUsing_nfa(!user.getUsing_nfa());
-            jdbc.update(UPDATE_MFA_TO_USER_BY_EMAIL_QUERY, Map.of("email", email, "isMfa", user.getUsing_nfa()));
+            user.setUsing_nfa(!user.isUsing_nfa());
+            jdbc.update(UPDATE_MFA_TO_USER_BY_EMAIL_QUERY, Map.of("email", email, "isMfa", user.isUsing_nfa()));
             return user;
         } catch (EmptyResultDataAccessException exception) {
             throw new ApiException("No user found. ");
@@ -340,7 +357,11 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     private Boolean isLinkExpired(String key, VerificationType verificationType) {
         try {
-            return jdbc.queryForObject(SELECT_EXPIRATION_BY_URL_QUERY, Map.of("url", getVerificationUrl(key, verificationType.getType())), Boolean.class);
+            System.out.println("URL"+getVerificationUrl(key, verificationType.getType()));
+            String url = "http://localhost:4200/api/v1/user/verify/"+verificationType.getType().toLowerCase()+"/"+key;
+            System.out.println("Temp Url: "+ url);
+            //return jdbc.queryForObject(SELECT_EXPIRATION_BY_URL_QUERY, Map.of("url", getVerificationUrl(key, verificationType.getType())), Boolean.class);
+            return jdbc.queryForObject(SELECT_EXPIRATION_BY_URL_QUERY, Map.of("url", url), Boolean.class);
         } catch (EmptyResultDataAccessException exception) {
             throw new ApiException("This link is not valid. Please try again.");
         } catch (Exception exception) {

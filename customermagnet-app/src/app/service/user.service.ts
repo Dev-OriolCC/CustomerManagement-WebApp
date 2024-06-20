@@ -10,7 +10,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class UserService {
-  
+
   private readonly server: string = "http://localhost:8080";
   private jwtHelper = new JwtHelperService();
 
@@ -18,21 +18,52 @@ export class UserService {
 
 
   login$ = (email: string, password: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.post<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/login`, { email, password })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
+  save$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.post<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/register`, user)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
+  resetPassword$ = (email: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.get<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/resetpassword/${email}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
+  verify$ = (key: string, type: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.get<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/verify/${type}/${key}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+  renewPassword$ = (form: {userId: number, password: string, confirmPassword: string}) => <Observable<CustomHttpResponse<Profile>>>
   this.http.post<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/login`, { email, password})
+    (`${this.server}/api/v1/user/reset/password/`, form)
     .pipe(
       tap(console.log),
       catchError(this.handleError)
     )
 
   verifyCode$ = (code: string, email: string) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.get<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/verify/code/${email}/${code}`)
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    )
-  
+    this.http.get<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/verify/code/${email}/${code}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
   profile$ = () => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>
       (`${this.server}/api/v1/user/profile`)
@@ -42,90 +73,91 @@ export class UserService {
       )
 
   update$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/update`, user )
-    .pipe(      
-      tap(console.log),
-      catchError(this.handleError)
-    )
+    this.http.patch<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/update`, user)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
-  updatePassword$ = (form: {currentPassword: string, newPassword: string, confirmNewPassword: string }) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/update/password`, form)
-    .pipe(      
-      tap(console.log),
-      catchError(this.handleError)
-    )
+  updatePassword$ = (form: { currentPassword: string, newPassword: string, confirmNewPassword: string }) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/update/password`, form)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
-  updateRole$ = (roleName: string ) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/update/role/${roleName}`, {})
-    .pipe(      
-      tap(console.log),
-      catchError(this.handleError)
-    )
-  
-  updateAccountSettings$ = (form: {enabled: boolean, non_locked: boolean }) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/update/account/settings`, form)
-    .pipe(      
-      tap(console.log),
-      catchError(this.handleError)
-    )
+  updateRole$ = (roleName: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/update/role/${roleName}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
+  updateAccountSettings$ = (form: { enabled: boolean, non_locked: boolean }) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/update/account/settings`, form)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
   toggleMfa$ = () => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/toggleMfa`, {})
-    .pipe(      
-      tap(console.log),
-      catchError(this.handleError)
-    )
+    this.http.patch<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/toggleMfa`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
 
   updateProfileImage$ = (formData: FormData) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/update/profile/image`, formData)
-    .pipe(      
-      tap(console.log),
-      catchError(this.handleError)
-    )
-  
+    this.http.patch<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/update/profile/image`, formData)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      )
+
 
   refreshToken$ = () => <Observable<CustomHttpResponse<Profile>>>
-  this.http.get<CustomHttpResponse<Profile>>
-    (`${this.server}/api/v1/user/refresh/token`, { headers: { Authorization: `Bearer ${localStorage.getItem(Key.REFRESH_TOKEN)}` } } )
-    .pipe(      
-      tap(response => {
-        console.log(response);
-        localStorage.removeItem(Key.REFRESH_TOKEN);
-        localStorage.removeItem(Key.TOKEN);
-        localStorage.setItem(Key.TOKEN, response.data.access_token);
-        localStorage.setItem(Key.REFRESH_TOKEN, response.data.refresh_token);
-      }),
-      catchError(this.handleError)
-    )
-  
+    this.http.get<CustomHttpResponse<Profile>>
+      (`${this.server}/api/v1/user/refresh/token`, { headers: { Authorization: `Bearer ${localStorage.getItem(Key.REFRESH_TOKEN)}` } })
+      .pipe(
+        tap(response => {
+          console.log(response);
+          localStorage.removeItem(Key.REFRESH_TOKEN);
+          localStorage.removeItem(Key.TOKEN);
+          localStorage.setItem(Key.TOKEN, response.data.access_token);
+          localStorage.setItem(Key.REFRESH_TOKEN, response.data.refresh_token);
+        }),
+        catchError(this.handleError)
+      )
+
   logout(): void {
     localStorage.removeItem(Key.TOKEN);
     localStorage.removeItem(Key.REFRESH_TOKEN);
   };
 
-  isAuthenticated = (): boolean => ( this.jwtHelper.decodeToken<string>(localStorage.getItem(Key.TOKEN)) && !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.TOKEN)) )
+  isAuthenticated = (): boolean => (this.jwtHelper.decodeToken<string>(localStorage.getItem(Key.TOKEN)) && !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.TOKEN)))
 
-  private handleError(error: HttpErrorResponse): Observable<any> {
+  private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
       // Frontend Error
       errorMessage = `A client error occurred: ${error.error.message}`;
     } else {
-      if(error.error.reason) {
+      if (error.error.reason) {
         // Backend Error
+        console.log("Backend Error: ", error.error.reason)
         errorMessage = error.error.reason;
       } else {
         // Generic Error
         errorMessage = `An error occurred: ${error.status}`;
       }
     }
-      return throwError(() => errorMessage);
+    return throwError(() => errorMessage);
   }
 
 }

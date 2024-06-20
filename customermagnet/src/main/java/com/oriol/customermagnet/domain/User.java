@@ -35,7 +35,7 @@ public class User {
     private String imageUrl;
     private boolean enabled;
     private boolean non_locked;
-    private Boolean using_nfa;
+    private boolean using_nfa; // Boolean
     private LocalDateTime created_date;
 
 }

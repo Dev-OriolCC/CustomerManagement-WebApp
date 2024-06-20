@@ -3,16 +3,22 @@ package com.oriol.customermagnet.resource;
 import com.oriol.customermagnet.domain.Customer;
 import com.oriol.customermagnet.domain.HttpResponse;
 import com.oriol.customermagnet.dto.UserDTO;
+import com.oriol.customermagnet.reporte.CustomerReport;
 import com.oriol.customermagnet.service.CustomerService;
 import com.oriol.customermagnet.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -96,5 +102,18 @@ public class CustomerResource {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .build());
+    }
+
+    @GetMapping("/download/report")
+    public ResponseEntity<Resource> downloadReport() {
+        System.out.println("Here");
+        List<Customer> customers = new ArrayList<>();
+        customerService.getCustomers().iterator().forEachRemaining(customers::add);
+        CustomerReport report = new CustomerReport(customers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("File-Name", "customer-report.xlsx");
+        httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=customer-report.xlsx");
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .headers(httpHeaders).body(report.export());
     }
 }
