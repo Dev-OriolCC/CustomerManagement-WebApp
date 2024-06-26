@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { CustomHttpResponse, Profile } from 'src/app/interface/appstates';
@@ -9,10 +9,13 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { UserService } from 'src/app/service/user.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { saveAs } from 'file-saver';
+import { NotificationService } from 'src/app/service/notification.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class HomeComponent implements OnInit {
 
@@ -29,7 +32,7 @@ export class HomeComponent implements OnInit {
   readonly DataState = DataState;
 
   
-  constructor(private userService: UserService, private customerService: CustomerService) { }
+  constructor(private userService: UserService, private customerService: CustomerService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this.homeState$ = this.customerService.customersList$()
@@ -42,6 +45,7 @@ export class HomeComponent implements OnInit {
       }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.notificationService.onError(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -80,13 +84,14 @@ export class HomeComponent implements OnInit {
       .pipe(map(response => {
         console.log(response)
         this.reportProgress(response);
-        
+        this.notificationService.onSuccess("Report downloaded successfully")
         return {
           dataState: DataState.LOADED, appData: this.dataSubject.value
       } 
     }),
       startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
       catchError((error: string) => {
+        this.notificationService.onError(error)
         return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
       })
     )

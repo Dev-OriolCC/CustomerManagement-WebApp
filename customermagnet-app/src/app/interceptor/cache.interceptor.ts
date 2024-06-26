@@ -22,7 +22,7 @@ export class CacheInterceptor implements HttpInterceptor {
       || request.url.includes("new/password")|| request.url.includes("reset/password")) {
         return next.handle(request);
     } 
-    if(request.method !== "GET" && request.url.includes("download")) {
+    if(request.method !== "GET" || request.url.includes("download")) {
       this.httpCacheService.evictAll();
       return next.handle(request);
     }

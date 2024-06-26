@@ -8,9 +8,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Customer } from '../interface/customer';
 import { Stats } from '../interface/stats';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CustomerService {
 
   private readonly server: string = "http://localhost:8080";

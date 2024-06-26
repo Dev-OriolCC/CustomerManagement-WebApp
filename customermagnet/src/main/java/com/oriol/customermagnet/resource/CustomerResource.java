@@ -97,8 +97,9 @@ public class CustomerResource {
                         .data(Map.of(
                                 "user", userService.getUserByEmail(userDTO.getEmail()),
                                 "customers", customerService.update(customer))
+                                // TODO: customers
                         )
-                        .message("Customer Retrieved")
+                        .message("Customer updated successfully")
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .build());

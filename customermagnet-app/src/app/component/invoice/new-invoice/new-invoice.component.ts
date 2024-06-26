@@ -1,33 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { EventType } from 'src/app/enum/event-type.enum';
 import { CustomHttpResponse, Profile } from 'src/app/interface/appstates';
+import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
+import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
+import { InvoiceService } from 'src/app/service/invoice.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 
+
 @Component({
-  selector: 'app-new-customer',
-  templateUrl: './new-customer.component.html',
-  styleUrls: ['./new-customer.component.css']
+  selector: 'app-new-invoice',
+  templateUrl: './new-invoice.component.html',
+  styleUrls: ['./new-invoice.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
-export class NewCustomerComponent implements OnInit {
+export class NewInvoiceComponent implements OnInit {
   
-  newCustomerState$: Observable<State<CustomHttpResponse<Profile>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
+  newInvoiceState$: Observable<State<CustomHttpResponse<Customer[] & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Customer[] & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
-  private showLogsSubject = new BehaviorSubject<boolean>(false);
-  showLogs$ = this.showLogsSubject.asObservable();
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private userService: UserService, private customerService: CustomerService) { }
+  constructor(private userService: UserService, private customerService: CustomerService, private invoiceService: InvoiceService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
-    this.newCustomerState$ = this.userService.profile$()
+    this.newInvoiceState$ = this.invoiceService.newInvoice$()
       .pipe(map(response => {
           console.log(response)
           this.dataSubject.next(response);
@@ -37,24 +42,30 @@ export class NewCustomerComponent implements OnInit {
       }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.notificationService.onError(error)
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
       )
 
   }
 
-  createCustomer(newCustomerForm: NgForm): void {
+  createInvoice(newInvoiceForm: NgForm): void {
     this.isLoadingSubject.next(true)
-    this.newCustomerState$ = this.customerService.createCustomer$(newCustomerForm.value)  
+    this.dataSubject.next({...this.dataSubject.value, message: null});
+    console.log()
+    this.newInvoiceState$ = this.invoiceService.createInvoice$(newInvoiceForm.value.customerId, newInvoiceForm.value)  
       .pipe(map(response => {
+          this.notificationService.onSuccess(response.message)
           console.log(response)
           this.isLoadingSubject.next(false)
-          newCustomerForm.resetForm({type: 'INDIVIDUAL', status: 'ACTIVE'});
+          newInvoiceForm.resetForm({status: 'PENDING'});
+          this.dataSubject.next(response);
           return { dataState: DataState.LOADED, appData: this.dataSubject.value } 
       }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
           this.isLoadingSubject.next(false)
+          this.notificationService.onError(error)
           return of({ dataState: DataState.LOADED, error })
         })
       )

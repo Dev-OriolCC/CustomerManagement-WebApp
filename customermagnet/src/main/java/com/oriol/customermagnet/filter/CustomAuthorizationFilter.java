@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.oriol.customermagnet.constant.Constants.PUBLIC_ROUTES;
+import static com.oriol.customermagnet.constant.Constants.TOKEN_PREFIX;
 import static com.oriol.customermagnet.utils.ExceptionUtils.processError;
 import static java.util.Arrays.asList;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
@@ -25,12 +27,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 @Component
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-    private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String[] PUBLIC_ROUTES = {"/api/v1/user/login","/api/v1/user/register", "/api/v1/user", "/api/v1/user/verify/code/" //"/api/v1/user/update/password",
-    , "/api/v1/user/refresh/token","/api/v1/user/image", "/api/v1/user/reset/password/**","/api/v1/user/resetpassword/**",  "/api/v1/user/verify/password/**", "/api/v1/user/verify/account/**",};
     private final TokenProvider tokenProvider;
-    public static final String EMAIL_KEY = "email";
-    public static final String TOKEN_KEY = "token";
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {

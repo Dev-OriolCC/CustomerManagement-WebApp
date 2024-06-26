@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -10,11 +10,13 @@ import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
 import { InvoiceService } from 'src/app/service/invoice.service';
 import jsPDF from 'jspdf';
+import { NotificationService } from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-view-invoice',
   templateUrl: './view-invoice.component.html',
-  styleUrls: ['./view-invoice.component.css']
+  styleUrls: ['./view-invoice.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewInvoiceComponent implements OnInit {
 
@@ -26,7 +28,7 @@ export class ViewInvoiceComponent implements OnInit {
   readonly DataState = DataState;
   private readonly INVOICE_ID = "id";
 
-  constructor(private activatedRoute: ActivatedRoute, private invoiceService: InvoiceService) { }
+  constructor(private activatedRoute: ActivatedRoute, private invoiceService: InvoiceService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     console.log("Loading...")
@@ -41,6 +43,7 @@ export class ViewInvoiceComponent implements OnInit {
         }),
           startWith({ dataState: DataState.LOADING }),
           catchError((error: string) => {
+            this.notificationService.onError(error);
             return of({ dataState: DataState.ERROR, error })
           })
         )

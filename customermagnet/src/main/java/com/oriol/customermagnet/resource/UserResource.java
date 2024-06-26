@@ -31,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Map;
+
+import static com.oriol.customermagnet.constant.Constants.TOKEN_PREFIX;
 import static com.oriol.customermagnet.mapper.UserDTOMapper.toUser;
 import static com.oriol.customermagnet.utils.ExceptionUtils.processError;
 import static com.oriol.customermagnet.utils.UserUtils.getAuthenticatedUser;
@@ -55,7 +57,7 @@ public class UserResource {
     private final HttpServletResponse response;
     private final ApplicationEventPublisher publisher; // 1.
 
-    private static final String TOKEN_PREFIX = "Bearer ";
+
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         UserDTO userDTO = authenticate(loginRequest.getEmail(), loginRequest.getPassword());

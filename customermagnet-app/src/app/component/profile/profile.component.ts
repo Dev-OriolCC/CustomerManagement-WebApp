@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -6,11 +6,14 @@ import { CustomHttpResponse, Profile } from 'src/app/interface/appstates';
 import { State } from 'src/app/interface/state';
 import { UserService } from 'src/app/service/user.service';
 import { EventType } from '../../enum/event-type.enum';
+import { NotificationService } from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class ProfileComponent implements OnInit {
   
@@ -23,7 +26,7 @@ export class ProfileComponent implements OnInit {
   readonly DataState = DataState;
   readonly EventType = EventType;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
 
@@ -37,6 +40,7 @@ export class ProfileComponent implements OnInit {
       }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.notificationService.onError(error);
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
       )
@@ -52,6 +56,7 @@ export class ProfileComponent implements OnInit {
           console.log(response)
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingSubject.next(false)
+          this.notificationService.onSuccess(response.message)
           return {
             dataState: DataState.LOADED, appData: this.dataSubject.value
         } 
@@ -59,6 +64,7 @@ export class ProfileComponent implements OnInit {
         startWith({ dataState: DataState.LOADING, appData: this.dataSubject.value }),
         catchError((error: string) => {
           console.log(error)
+          this.notificationService.onError(error);
           this.isLoadingSubject.next(false)
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
@@ -73,19 +79,21 @@ export class ProfileComponent implements OnInit {
             console.log(response)
             passwordForm.reset();
             this.isLoadingSubject.next(false)
+            this.notificationService.onSuccess(response.message)
             return { dataState: DataState.LOADED, appData: this.dataSubject.value } 
         }),
           startWith({ dataState: DataState.LOADING, appData: this.dataSubject.value }),
           catchError((error: string) => {
             console.log(error)
+            this.notificationService.onError(error);
             passwordForm.reset();
             this.isLoadingSubject.next(false)
             return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
           })
         ) 
     } else {
-      
-      console.log("Passwords dont match")
+      this.notificationService.onError("Passwords dont match");
+      console.log()
       passwordForm.reset();
     }
     
@@ -99,6 +107,7 @@ export class ProfileComponent implements OnInit {
           console.log(response)
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingSubject.next(false)
+          this.notificationService.onSuccess(response.message)
           return {
             dataState: DataState.LOADED, appData: this.dataSubject.value
         } 
@@ -107,6 +116,7 @@ export class ProfileComponent implements OnInit {
         catchError((error: string) => {
           console.log(error)
           this.isLoadingSubject.next(false)
+          this.notificationService.onError(error);
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
       )
@@ -120,6 +130,7 @@ export class ProfileComponent implements OnInit {
           console.log(response)
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingSubject.next(false)
+          this.notificationService.onSuccess(response.message)
           return {
             dataState: DataState.LOADED, appData: this.dataSubject.value
         } 
@@ -128,6 +139,7 @@ export class ProfileComponent implements OnInit {
         catchError((error: string) => {
           console.log(error)
           this.isLoadingSubject.next(false)
+          this.notificationService.onError(error);
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
       )
@@ -140,12 +152,14 @@ export class ProfileComponent implements OnInit {
           console.log(response)
           this.dataSubject.next({...response, data: response.data});
           this.isLoadingSubject.next(false)
+          this.notificationService.onSuccess(response.message)
           return { dataState: DataState.LOADED, appData: this.dataSubject.value } 
       }),
         startWith({ dataState: DataState.LOADING, appData: this.dataSubject.value }),
         catchError((error: string) => {
           console.log(error)
           this.isLoadingSubject.next(false)
+          this.notificationService.onError(error);
           return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
         })
       )
@@ -167,6 +181,7 @@ export class ProfileComponent implements OnInit {
                 user: {...response.data.user, imageUrl: `${response.data.user.imageUrl}?time=${new Date().getTime()}`
               }
             }}); 
+            this.notificationService.onSuccess(response.message)
             this.isLoadingSubject.next(false)
             return { dataState: DataState.LOADED, appData: this.dataSubject.value } 
         }),
@@ -174,6 +189,7 @@ export class ProfileComponent implements OnInit {
           catchError((error: string) => {
             console.log(error)
             this.isLoadingSubject.next(false)
+            this.notificationService.onError(error);
             return of({ dataState: DataState.ERROR, appData: this.dataSubject.value, error })
           })
         )

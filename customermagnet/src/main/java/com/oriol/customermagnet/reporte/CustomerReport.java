@@ -18,13 +18,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.oriol.customermagnet.constant.Constants.HEADERS;
+
 @Slf4j
 public class CustomerReport {
 
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private List<Customer> customers;
-    private static String[] HEADERS = { "ID", "NAME", "EMAIL", "TYPE", "STATUS", "ADDRESS", "PHONE", "CREATED_AT" };
 
     public CustomerReport(List<Customer> customers) {
         this.customers = customers;

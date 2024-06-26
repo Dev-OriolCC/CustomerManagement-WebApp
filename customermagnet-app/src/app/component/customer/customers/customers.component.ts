@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
@@ -8,11 +8,13 @@ import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { ExtractArrayValuePipe } from 'src/app/pipes/extract-array-value.pipe';
 import { CustomerService } from 'src/app/service/customer.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.css']
+  styleUrls: ['./customers.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersComponent implements OnInit {
 
@@ -27,7 +29,7 @@ export class CustomersComponent implements OnInit {
   readonly DataState = DataState;
 
   
-  constructor(private userService: UserService, private customerService: CustomerService) { }
+  constructor(private userService: UserService, private customerService: CustomerService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this.customersState$ = this.customerService.customersList$()
@@ -40,6 +42,7 @@ export class CustomersComponent implements OnInit {
       }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.notificationService.onError(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -55,6 +58,7 @@ export class CustomersComponent implements OnInit {
       }),
         startWith({ dataState: DataState.LOADED }),
         catchError((error: string) => {
+          this.notificationService.onError(error)
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -72,6 +76,7 @@ export class CustomersComponent implements OnInit {
     }),
       startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
       catchError((error: string) => {
+        this.notificationService.onError(error)
         return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
       })
     )

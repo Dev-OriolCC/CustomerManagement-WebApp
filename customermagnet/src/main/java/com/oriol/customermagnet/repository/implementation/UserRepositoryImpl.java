@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static com.oriol.customermagnet.constant.Constants.DATE_FORMAT;
 import static com.oriol.customermagnet.enumeration.RoleType.ROLE_USER;
 import static com.oriol.customermagnet.enumeration.VerificationType.ACCOUNT;
 import static com.oriol.customermagnet.enumeration.VerificationType.PASSWORD;
@@ -53,7 +54,6 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
     private final EmailService emailService;
-    private final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
     @Override
     public User create(User user) {

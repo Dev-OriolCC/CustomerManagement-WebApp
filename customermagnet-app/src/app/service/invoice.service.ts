@@ -6,9 +6,7 @@ import { CustomHttpResponse } from '../interface/appstates';
 import { User } from '../interface/user';
 import { Invoice } from '../interface/invoice';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class InvoiceService {
 
   private readonly server: string = "http://localhost:8080";

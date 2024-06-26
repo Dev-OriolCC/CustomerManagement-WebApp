@@ -6,9 +6,7 @@ import { User } from '../interface/user';
 import { Key } from '../enum/key.enum';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserService {
 
   private readonly server: string = "http://localhost:8080";

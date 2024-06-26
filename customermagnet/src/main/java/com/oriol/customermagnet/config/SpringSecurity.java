@@ -10,12 +10,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,14 +27,14 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.oriol.customermagnet.constant.Constants.PUBLIC_URLS;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SpringSecurity {
-    private final static String[] PUBLIC_URLS = { "/api/v1/user/login/**", "/api/v1/user/register/**", "/api/v1/user/image/**", //"/api/v1/user/**", "/api/v1/user/update/password"
-            "/api/v1/user/verify/code/**", "/api/v1/user/reset/password/**", "/api/v1/user/resetpassword/**", "/api/v1/user/verify/password/**", "/api/v1/user/verify/account/**",
-    "/api/v1/user/error", "/api/v1/user/verify/password/**", "/api/v1/user/verify/account/**", "/api/v1/user/refresh/token/**" };
+
 //    private final static String[] PUBLIC_URLS = { "/**" };
 
     private final BCryptPasswordEncoder encoder;

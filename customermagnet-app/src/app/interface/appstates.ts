@@ -42,7 +42,7 @@ export interface Page {
 
 export interface CustomerState {
     user: User;
-    customer: Customer;
+    customers: Customer;
 }
 
 export interface RegisterState {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { CustomHttpResponse } from 'src/app/interface/appstates';
@@ -7,12 +7,15 @@ import { State } from 'src/app/interface/state';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
 import { UserService } from 'src/app/service/user.service';
-import { InvoiceService } from '../../service/invoice.service';
+import { InvoiceService } from '../../../service/invoice.service';
+import { NotificationService } from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-invoices',
   templateUrl: './invoices.component.html',
-  styleUrls: ['./invoices.component.css']
+  styleUrls: ['./invoices.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class InvoicesComponent implements OnInit {
 
@@ -27,7 +30,7 @@ export class InvoicesComponent implements OnInit {
   readonly DataState = DataState;
 
   
-  constructor(private userService: UserService, private invoiceService: InvoiceService) { }
+  constructor(private userService: UserService, private invoiceService: InvoiceService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this.invoicesState$ = this.invoiceService.invoicesList$()
@@ -40,6 +43,7 @@ export class InvoicesComponent implements OnInit {
       }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.notificationService.onError(error)
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -57,6 +61,7 @@ export class InvoicesComponent implements OnInit {
     }),
       startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
       catchError((error: string) => {
+        this.notificationService.onError(error)
         return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
       })
     )
