@@ -19,6 +19,7 @@ public class CustomermagnetApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CustomermagnetApplication.class, args);
+		System.out.println("***************************************** ");
 	}
 
 	@Bean

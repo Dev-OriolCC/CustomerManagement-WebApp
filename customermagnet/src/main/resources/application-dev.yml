@@ -1,47 +1,21 @@
-jwt:
-  secret: ${JWT_SECRET}
+# Database
+MYSQL_USERNAME: root
+MYSQL_PASSWORD:
+MYSQL_HOST:
+MYSQL_PORT: 3306
+MYSQL_DATABASE: spring_customer
 
-server:
-  error:
-    path: /api/v1/user/error
-    whitelabel:
-      enabled: false
+# Server Config
+CONTAINER_PORT: 8080
+ACTIVE_PROFILE: dev
 
-spring:
-  application:
-    name: customermagnet
-  datasource:
-    url: jdbc:mysql://localhost:3306/spring_customer
-    password:
-    username: root
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
-    generate-ddl: true
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        globally_quoted_identifiers: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
-  sql:
-    init:
-      mode: never
-      continue-on-error: false
+# Email Config
+EMAIL_HOST: smtp.gmail.com
+EMAIL_PORT: 587
+EMAIL_ID: ${EMAIL_USERNAME}
+EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+VERIFY_EMAIL_HOST: http://localhost:${CONTAINER_PORT}
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          writetimeout: 5000
-          connectiontimeout: 5000
-          timeout: 5000
-          auth: true
-          starttls:
-            enable: true
-            required: true
+UI_APP_URL: http://localhost:4200
+
+JWT_SECRET: testsecret

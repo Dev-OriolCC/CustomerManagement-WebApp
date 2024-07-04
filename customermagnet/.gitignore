@@ -4,6 +4,12 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Enviorment Variable FILES ###
+.env
+.env.dev
+.env.prod
+test.sh
+
 ### STS ###
 .apt_generated
 .classpath

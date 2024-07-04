@@ -1,0 +1,33 @@
+services:
+  customermagnet:
+    container_name: customermagnet_container
+    build:
+      context: .
+      args:
+        CONTAINER_PORT: ${CONTAINER_PORT}
+    image: customermagnet:v1
+    restart: unless-stopped
+    env_file:
+      - ${ENV_FILE}
+    expose:
+      - ${CONTAINER_PORT}
+    ports:
+      - ${CONTAINER_PORT}:${HOST_PORT}
+    environment:
+      MYSQL_DATABASE: spring_customer?createDatabaseIfNotExist=true&serverTimezone=UTC
+      MYSQL_HOST: spring_db
+  spring_db:
+    image: mysql:8.0.30
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: spring_customer
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+
+
