@@ -5,11 +5,12 @@ import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse } from '../interface/appstates';
 import { User } from '../interface/user';
 import { Invoice } from '../interface/invoice';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class InvoiceService {
 
-  private readonly server: string = "http://localhost:8080";
+  private readonly server: string = environment.API_BASE_URL;
   constructor(private http: HttpClient) { }
 
   newInvoice$ = () => <Observable<CustomHttpResponse<Customer[] & User>>>

@@ -79,7 +79,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             // 7. Return user
             return user;
         } catch (Exception exception) {
-            throw new ApiException("An error has occurred. Please, try again. " );
+            log.error(exception.getMessage());
+            throw new ApiException("An error has occurred. Please, try again. ");
         }
     }
 

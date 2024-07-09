@@ -40,6 +40,7 @@ public class TokenProvider {
 
     public String createAccessToken(UserPrincipal userPrincipal) {
         String[] claims = getClaimsFromUser(userPrincipal);
+        System.out.println("***************************************** SECRET: "+secret);
         return JWT.create().withIssuer("Oriol").withAudience("Customer Magnet")
                 .withIssuedAt(new Date()).withSubject(String.valueOf(userPrincipal.getUser().getId()))
                 .withArrayClaim(AUTHORITIES, claims)

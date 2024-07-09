@@ -65,7 +65,11 @@ public class SpringSecurity {
     public CorsConfigurationSource corsConfigurationSource() {
         var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:3000", "http://customermagnet.org"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:3000", "http://customermagnet.org",
+                "http://192.168.0.107:8080", "http://192.168.0.107:8000", "http://192.168.0.107:80",
+                "http://192.168.0.106:8080", "http://192.168.0.106:8000", "http://192.168.0.106:80", "http://192.168.0.106",
+                "http://172.19.0.2:8080", "http://172.19.0.2:8000", "http://172.19.0.2:80", "http://172.19.0.2"
+        ));
         //corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type", "Accept", "Jwt-Token", "Authorization",
                 "Origin, Accept", "X-Requested-with", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
@@ -87,3 +91,4 @@ public class SpringSecurity {
 
 
 }
+

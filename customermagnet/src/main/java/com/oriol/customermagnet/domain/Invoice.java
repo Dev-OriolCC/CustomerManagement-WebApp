@@ -18,6 +18,7 @@ import java.util.Date;
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Entity
+@Table(name = "Invoice")
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

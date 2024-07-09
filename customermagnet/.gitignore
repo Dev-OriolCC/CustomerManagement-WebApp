@@ -9,6 +9,7 @@ target/
 .env.dev
 .env.prod
 test.sh
+localhost.sql
 
 ### STS ###
 .apt_generated

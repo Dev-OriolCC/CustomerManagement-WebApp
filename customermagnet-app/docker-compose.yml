@@ -1,0 +1,15 @@
+services:
+  customermagnet-app:
+    container_name: customermagnetappcontainer
+    build: .
+    image: customermagnet-app:v1
+    ports:
+      - 80:80
+    expose:
+      - 80
+    networks:
+      - internalnet
+
+networks:
+  internalnet:
+    driver: bridge
