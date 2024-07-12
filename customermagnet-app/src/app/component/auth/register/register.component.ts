@@ -9,7 +9,7 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
+  styleUrls: ['./register.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterComponent {
@@ -20,7 +20,6 @@ export class RegisterComponent {
   constructor(private userService: UserService, private notificationService: NotificationService){};
 
   register(registerForm: NgForm) {
-    console.log(registerForm.value)
     this.registerState$ = this.userService.save$(registerForm.value)
     .pipe(map(response => {
       this.notificationService.onDefault(response.message)

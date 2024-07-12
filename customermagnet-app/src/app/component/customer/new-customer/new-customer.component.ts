@@ -12,7 +12,7 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-new-customer',
   templateUrl: './new-customer.component.html',
-  styleUrls: ['./new-customer.component.css'],
+  styleUrls: ['./new-customer.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
@@ -47,7 +47,7 @@ export class NewCustomerComponent implements OnInit {
 
   }
 
-  createCustomer(newCustomerForm: NgForm): void {
+  createCustomer(newCustomerForm: NgForm): void {    
     this.isLoadingSubject.next(true)
     this.newCustomerState$ = this.customerService.createCustomer$(newCustomerForm.value)  
       .pipe(map(response => {

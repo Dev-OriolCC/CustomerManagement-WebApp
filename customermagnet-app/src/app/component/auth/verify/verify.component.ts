@@ -58,7 +58,6 @@ export class VerifyComponent implements OnInit {
       confirmPassword: resetPasswordForm.value.confirmPassword
     })
       .pipe(map(response => {
-        console.log(response)
         this.isLoadingSubject.next(false);
         this.notificationService.onDefault(response.message)
         return { type: "account" as AccountType, title: "Success!", dataState: DataState.LOADED, message: response.message, verifySuccess: true }

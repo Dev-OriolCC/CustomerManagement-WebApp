@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+$notifier-success-background-color: #338221ea;
+$notifier-danger-background-color: #af2b38c6;
+$notifier-default-background-color: #01080D;
+@import "node_modules/angular-notifier/styles";
+
+$primary: #113859;
+$danger: #af2b38c6;
+$success: #338221ea; 
+$warning: #8b761fea; 
+$info: #235383ea; 
+@import 'node_modules/bootstrap/scss/bootstrap.scss';

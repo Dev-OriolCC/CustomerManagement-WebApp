@@ -9,7 +9,7 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-resetpassword',
   templateUrl: './resetpassword.component.html',
-  styleUrls: ['./resetpassword.component.css'],
+  styleUrls: ['./resetpassword.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetpasswordComponent {
@@ -19,11 +19,9 @@ export class ResetpasswordComponent {
   constructor(private userService: UserService, private notificationService: NotificationService) { };
 
   resetPassword(resetPasswordForm: NgForm) {
-    console.log(resetPasswordForm.value.email)
     this.resetPasswordState$ = this.userService.resetPassword$(resetPasswordForm.value.email)
       .pipe(map(response => {
         this.notificationService.onDefault(response.message)
-        console.log("Response: " + response)
         resetPasswordForm.reset()
         return { dataState: DataState.LOADED, registerSuccess: true, message: response.message }
       }),

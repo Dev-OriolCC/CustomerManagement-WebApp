@@ -20,7 +20,6 @@ public class NewUserEventListener {
 
     @EventListener
     public void onNewUserEvent(NewUserEvent event) {
-        log.info("Event listener fired!!!");
         eventService.addUserEvent(event.getEmail(), event.getType(), getDevice(httpServletRequest), getIpAdress(httpServletRequest));
     }
 

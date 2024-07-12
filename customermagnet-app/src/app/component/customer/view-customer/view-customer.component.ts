@@ -12,7 +12,7 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-view-customer',
   templateUrl: './view-customer.component.html',
-  styleUrls: ['./view-customer.component.css'],
+  styleUrls: ['./view-customer.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
@@ -34,7 +34,6 @@ export class ViewCustomerComponent implements OnInit {
 
         return this.customerService.customerView$(+params.get(this.CUSTOMER_ID))
         .pipe(map(response => {
-            console.log(response)
             this.dataSubject.next(response);
             return { dataState: DataState.LOADED, appData: response } 
         }),
@@ -51,7 +50,6 @@ export class ViewCustomerComponent implements OnInit {
 
   updateCustomer(customerForm: NgForm): void {
     this.isLoadingSubject.next(true)
-    console.log(this.dataSubject.value.data)
     this.customerState$ = this.customerService.updateCustomer$(customerForm.value)
       .pipe(map(response => {
 

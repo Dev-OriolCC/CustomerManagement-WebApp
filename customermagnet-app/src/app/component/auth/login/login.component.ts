@@ -11,7 +11,7 @@ import { NotificationService } from 'src/app/service/notification.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {
@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
   }
 
   login(loginForm: NgForm): void {
-    console.log("water");
 
     this.loginState$ = this.userService.login$(loginForm.value.email, loginForm.value.password)
       .pipe(map(response => {

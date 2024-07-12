@@ -21,7 +21,7 @@
                                 <span style="position: relative">
                                     <img [src]="state?.appData?.data?.user?.imageUrl" alt="John"
                                         class="shadow" />
-                                    <i (click)="fileInput.click()" class="bi bi-camera-fill right-position"></i>
+                                    <i (click)="fileInput.click()" class="bi bi-camera right-position text-primary"></i>
                                 </span>
                             </div>
                             <h4 class="text-center">{{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}</h4>
@@ -334,8 +334,8 @@
                                             </td>
                                             <td>{{ event.description }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-sm"
-                                                    style="background-color: #fd5d0d; font-weight: 450;">Report</button>
+                                                <button type="button" class="btn btn-sm bg-danger text-light"
+                                                    style="font-weight: 450;">Report</button>
                                             </td>
                                         </tr>
                                     </tbody>

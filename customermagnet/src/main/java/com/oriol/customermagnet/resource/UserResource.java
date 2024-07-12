@@ -307,7 +307,6 @@ public class UserResource {
 
     @RequestMapping("/error")
     public ResponseEntity<HttpResponse> handleError(HttpServletRequest request) {
-        System.out.println("Llegue! ");
         return new ResponseEntity<>(HttpResponse.builder()
                 .timestamp(LocalDateTime.now().toString())
                 .reason("Not Found: "+request+"\n Please check the url.")

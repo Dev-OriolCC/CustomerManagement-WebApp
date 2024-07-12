@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse, Profile, Page, CustomerState } from '../interface/appstates';
 import { User } from '../interface/user';
-import { Key } from '../enum/key.enum';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { Customer } from '../interface/customer';
 import { Stats } from '../interface/stats';
 import { environment } from 'src/environments/environment';
@@ -13,7 +11,6 @@ import { environment } from 'src/environments/environment';
 export class CustomerService {
 
   private readonly server: string = environment.API_BASE_URL;
-  //private jwtHelper = new JwtHelperService();
 
   constructor(private http: HttpClient) { }
 
@@ -73,14 +70,14 @@ export class CustomerService {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
       // Frontend Error
-      errorMessage = `A client error occurred: ${error.error.message}`;
+      errorMessage = `[ERROR] A client error occurred: ${error.error.message}`;
     } else {
       if (error.error.reason) {
         // Backend Error
         errorMessage = error.error.reason;
       } else {
         // Generic Error
-        errorMessage = `An error occurred: ${error.status}`;
+        errorMessage = `[ERROR] An error occurred: ${error.status}`;
       }
     }
     return throwError(() => errorMessage);

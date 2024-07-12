@@ -1,0 +1,23 @@
+.btn-gray {
+    background-color: #403935;
+    color: white;
+}
+.btn-blue {
+    background-color: #113859;
+    color: white;
+}
+.btn-pag-disabled {
+    color: #113859;
+}
+.link-text {
+    color: #262220;
+}
+
+.navbar-color {
+    background-color: #01080D;
+}
+
+.img-profile-view {
+    height: 130px;
+    width: 130px;
+}

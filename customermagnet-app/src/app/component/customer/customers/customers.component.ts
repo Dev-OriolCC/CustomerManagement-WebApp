@@ -13,7 +13,7 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.css'],
+  styleUrls: ['./customers.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersComponent implements OnInit {

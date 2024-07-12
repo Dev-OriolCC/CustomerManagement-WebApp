@@ -83,7 +83,7 @@ public class CustomerResource {
                                 "user", userService.getUserByEmail(userDTO.getEmail()),
                                 "customer", customerService.create(customer))
                         )
-                        .message("Customer Retrieved")
+                        .message("Customer registered successfully.")
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .build());

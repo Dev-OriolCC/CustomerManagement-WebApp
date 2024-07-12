@@ -16,7 +16,7 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-new-invoice',
   templateUrl: './new-invoice.component.html',
-  styleUrls: ['./new-invoice.component.css'],
+  styleUrls: ['./new-invoice.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
@@ -50,9 +50,10 @@ export class NewInvoiceComponent implements OnInit {
   }
 
   createInvoice(newInvoiceForm: NgForm): void {
+
     this.isLoadingSubject.next(true)
     this.dataSubject.next({...this.dataSubject.value, message: null});
-    console.log()
+    console.log(newInvoiceForm.value)
     this.newInvoiceState$ = this.invoiceService.createInvoice$(newInvoiceForm.value.customerId, newInvoiceForm.value)  
       .pipe(map(response => {
           this.notificationService.onSuccess(response.message)

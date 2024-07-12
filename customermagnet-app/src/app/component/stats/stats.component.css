@@ -43,8 +43,8 @@ p {
 
 /* ================ colors =====================*/
 .bg-facebook {
-    background-color: #285a71 !important;
-    border: 1px solid #3b5998;
+    background-color: #031626bc !important;
+    border: 1px solid #113859;
     color: white;
 }
 
@@ -53,8 +53,8 @@ p {
 }
 
 .bg-twitter {
-    background-color: #04994e !important;
-    border: 1px solid #04994e;
+    background-color: #031626bc !important;
+    border: 1px solid #031626;
     color: white;
 }
 
@@ -63,8 +63,8 @@ p {
 }
 
 .bg-googleplus {
-    background-color: #81830b !important;
-    border: 1px solid #81830b;
+    background-color: #031626bc !important;
+    border: 1px solid #8A8C80;
     color: white;
 }
 

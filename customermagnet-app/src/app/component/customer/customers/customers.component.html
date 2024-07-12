@@ -6,7 +6,7 @@
                 <nav aria-label="breadcrumb" style="margin-top: 8px;">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a [routerLink]="['/']">Home</a>
+                            <a class="link-text" [routerLink]="['/']">Home</a>
                         </li>
                         <li class="breadcrumb-item active"> Customers </li>
                     </ol>
@@ -24,10 +24,10 @@
                             <div class="col-auto">
                                 <label for="name" class="visually-hidden"></label>
                                 <input type="text" ngModel name="name" #name class="form-control"
-                                    placeholder="Customer Name">
+                                    placeholder="Search Customer">
                             </div>
                             <div class="col-auto">
-                                <button type="submit" class="btn btn-primary mb-3">Search Customers</button>
+                                <button type="submit" class=" btn btn-blue bi bi-search"></button>
                             </div>
                         </form>
                     </div>
@@ -55,17 +55,18 @@
                                     <td>{{ customer.phone }}</td>
                                     <td>
                                         <span class="badge" [ngClass]="[
-                                      customer.status === 'ACTIVE' ? ' bg-success' : '',
-                                      customer.status === 'PENDING' ? ' bg-primary' : '',
-                                      customer.status === 'BANNED' ? ' bg-danger' : '',
-                                      customer.status === 'INACTIVE' ? ' bg-info' : '',]">
+                                            customer.status === 'ACTIVE' ? ' bg-success' : '',
+                                            customer.status === 'PENDING' ? ' bg-primary' : '',
+                                            customer.status === 'BANNED' ? ' bg-danger' : '',
+                                            customer.status === 'INACTIVE' ? ' bg-info' : '',]"
+                                        >
                                             {{ customer.status }}
                                         </span>
                                     </td>
                                     <td>{{ customer.type }}</td>
                                     <td>
                                         <button type="button" [routerLink]="['/customer', customer.id]"
-                                            class="btn btn-info">View</button>
+                                            class="btn btn-blue">View</button>
                                         <!-- <button type="button" (click)="selectCustomer(customer)" class="btn btn-info">View</button> -->
                                     </td>
                                 </tr>
@@ -77,19 +78,19 @@
                                 <li [ngClass]="0 == (currentPage$ | async) ? ' disabled' : ''"
                                     class="page-item pointer">
                                     <a (click)="goToNextOrPrevPage('backward', searchForm.value.name)"
-                                        class="page-link">&laquo; Prev</a>
+                                        class="page-link btn-pag-disabled">&laquo; Prev</a>
                                 </li>
                                 <li *ngFor="let pageNumber of state?.appData?.data?.page.totalPages | extractArrayValue: 'number'; let i = index;"
                                     class="page-item pointer">
                                     <a (click)="goToPage(i, searchForm.value.name)"
-                                        [ngClass]="i == (currentPage$ | async) ? ' active' : ''" class="page-link">
+                                        [ngClass]="i == (currentPage$ | async) ? ' btn-blue' : ' btn-pag-disabled'" class="page-link">
                                         {{ i + 1 }}
                                     </a>
                                 </li>
                                 <li [ngClass]="(state?.appData?.data?.page.totalPages - 1) == (currentPage$ | async) ? ' disabled' : ''"
                                     class="page-item pointer">
                                     <a (click)="goToNextOrPrevPage('forward', searchForm.value.name)"
-                                        class="page-link">Next &raquo;</a>
+                                        class="page-link btn-pag-disabled">Next &raquo;</a>
                                 </li>
                             </ul>
                         </nav>

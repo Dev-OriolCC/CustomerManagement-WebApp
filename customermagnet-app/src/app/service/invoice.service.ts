@@ -50,14 +50,14 @@ export class InvoiceService {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
       // Frontend Error
-      errorMessage = `A client error occurred: ${error.error.message}`;
+      errorMessage = `[ERROR] A client error occurred: ${error.error.message}`;
     } else {
       if(error.error.reason) {
         // Backend Error
         errorMessage = error.error.reason;
       } else {
         // Generic Error
-        errorMessage = `An error occurred: ${error.status}`;
+        errorMessage = `[ERROR] An error occurred: ${error.status}`;
       }
     }
       return throwError(() => errorMessage);

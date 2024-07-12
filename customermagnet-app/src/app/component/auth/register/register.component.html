@@ -1,7 +1,7 @@
 <section *ngIf="(registerState$ | async) as state" [ngSwitch]="state.dataState">
     <div *ngIf="!state.registerSuccess" class="container">
         <div class="row justify-content-center my-5">
-            <div class="col-md-6" style="margin-top: 50px;">
+            <div class="col-md-5" style="margin-top: 50px;">
                 <div class="card">
                     <div class="card-body">
                         <div class="text-center">
@@ -16,30 +16,32 @@
                                 aria-label="Close"></button>
                         </div>
                         <form #registerForm="ngForm" (ngSubmit)="register(registerForm)">
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="email">First Name</label>
-                                <input type="text" [disabled]="state.dataState === DataState.LOADING" ngModel
-                                    name="firstName" class="form-control" required minlength="2">
+                            <div class="form-floating mb-3">    
+                                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="text" name="firstName" 
+                                class="form-control" id="firstName"  placeholder=" " required minlength="5" />   
+                                <label for="firstName" >First Name</label> 
                             </div>
-                            <div class="form-outline mb-4">
-                                <label for="lastName" class="form-label">Last name</label>
-                                <input type="text" [disabled]="state.dataState === DataState.LOADING" ngModel
-                                    name="lastName" class="form-control" required minlength="2">
+                            <div class="form-floating mb-3">    
+                                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="text" name="lastName" 
+                                class="form-control" id="lastName"  placeholder=" " required minlength="5" />   
+                                <label for="lastName" >Last Name</label> 
                             </div>
-                            <div class="form-outline mb-4">
-                                <label for="password" class="form-label">Email Address</label>
-                                <input type="email" [disabled]="state.dataState === DataState.LOADING" ngModel
-                                    name="email" class="form-control" required minlength="3">
+                            <div class="form-floating mb-3">    
+                                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="email" name="email" 
+                                class="form-control" id="email"  placeholder=" " required minlength="5" />   
+                                <label for="email" >Email address</label> 
                             </div>
-                            <div class="form-outline mb-4">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" [disabled]="state.dataState === DataState.LOADING" ngModel
-                                    name="password" class="form-control" required minlength="4">
+                            <div class="form-floating mb-3">    
+                                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="password" name="password" 
+                                class="form-control" id="password" placeholder=" " required minlength="5" />   
+                                <label for="email">Password</label> 
                             </div>
+
                             <div class="d-flex justify-content-center mb-4">
                                 <button
                                     [disabled]="state.dataState === DataState.LOADING || registerForm.invalid || registerForm.pristine"
-                                    type="submit" class="btn btn-primary">
+                                    type="submit" class="btn btn-gray"
+                                    >
                                     <span *ngIf="state.dataState === DataState.LOADING"
                                         class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                         style="margin-right: 5px;"></span>
@@ -51,11 +53,11 @@
                         <div class="row mb-4">
                             <div class="col d-flex justify-content-center">
                                 <a [ngStyle]="{'pointer-events' : state.dataState === DataState.LOADING ? 'none' : 'auto'}"
-                                    [routerLink]="['/login']">Account Login</a>
+                                    [routerLink]="['/login']" class="link-text">Account Login</a>
                             </div>
-                            <div class="col">
+                            <div class="col link-text">
                                 <a [ngStyle]="{'pointer-events' : state.dataState === DataState.LOADING ? 'none' : 'auto'}"
-                                    [routerLink]="['/resetpassword']">Forgot password?</a>
+                                    [routerLink]="['/resetpassword']" class="link-text">Forgot password?</a>
                             </div>
                         </div>
                     </div>
@@ -79,11 +81,11 @@
                         </div>
                         <div class="row mb-4">
                             <div class="col d-flex justify-content-center">
-                                <a [routerLink]="['/login']">Account Login</a>
+                                <a [routerLink]="['/login']" class="link-text">Account Login</a>
                             </div>
                             <div class="col">
-                                <a (click)="createAccountForm()"
-                                    style="color: #0D6EFD; text-decoration: underline; cursor: pointer;">
+                                <a (click)="createAccountForm()" class="link-text"
+                                    style="text-decoration: underline; cursor: pointer;">
                                     Create another account
                                 </a>
                             </div>

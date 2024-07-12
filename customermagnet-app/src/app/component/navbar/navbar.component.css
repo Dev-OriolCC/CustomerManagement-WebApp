@@ -2,3 +2,7 @@
     height: 32px;
     width: 32px;
 }
+
+.dropdown-link-active-bg {
+    background-color: red;
+}

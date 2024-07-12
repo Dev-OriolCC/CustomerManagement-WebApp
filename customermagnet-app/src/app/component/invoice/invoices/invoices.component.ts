@@ -13,7 +13,7 @@ import { NotificationService } from 'src/app/service/notification.service';
 @Component({
   selector: 'app-invoices',
   templateUrl: './invoices.component.html',
-  styleUrls: ['./invoices.component.css'],
+  styleUrls: ['./invoices.component.css', '../../../app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
