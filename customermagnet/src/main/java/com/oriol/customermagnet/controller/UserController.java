@@ -1,4 +1,4 @@
-package com.oriol.customermagnet.resource;
+package com.oriol.customermagnet.controller;
 
 import com.oriol.customermagnet.domain.HttpResponse;
 import com.oriol.customermagnet.domain.User;
@@ -34,7 +34,6 @@ import java.util.Map;
 
 import static com.oriol.customermagnet.constant.Constants.TOKEN_PREFIX;
 import static com.oriol.customermagnet.mapper.UserDTOMapper.toUser;
-import static com.oriol.customermagnet.utils.ExceptionUtils.processError;
 import static com.oriol.customermagnet.utils.UserUtils.getAuthenticatedUser;
 import static com.oriol.customermagnet.utils.UserUtils.getLoggedInUser;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -46,7 +45,7 @@ import static org.springframework.security.authentication.UsernamePasswordAuthen
 @RequestMapping(path = "/api/v1/user")
 @RequiredArgsConstructor
 @CrossOrigin
-public class UserResource {
+public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;

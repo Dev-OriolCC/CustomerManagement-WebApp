@@ -1,6 +1,5 @@
 package com.oriol.customermagnet.rowmapper;
 
-import com.oriol.customermagnet.domain.Role;
 import com.oriol.customermagnet.domain.Stats;
 import org.springframework.jdbc.core.RowMapper;
 

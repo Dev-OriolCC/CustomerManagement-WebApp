@@ -1,7 +1,4 @@
 package com.oriol.customermagnet.constant;
-
-import com.oriol.customermagnet.provider.TokenProvider;
-
 public class Constants {
 
     public final static String[] PUBLIC_URLS = { "/api/v1/user/login/**", "/api/v1/user/register/**", "/api/v1/user/image/**", //"/api/v1/user/**", "/api/v1/user/update/password"

@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toList;
 public class TokenProvider {
 
     private static final String AUTHORITIES = "authorities";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1_800_000;
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 3_800_000;
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 432_000_000;
     private final UserService userService;
     @Value("${jwt.secret}")
@@ -40,7 +40,6 @@ public class TokenProvider {
 
     public String createAccessToken(UserPrincipal userPrincipal) {
         String[] claims = getClaimsFromUser(userPrincipal);
-        System.out.println("***************************************** SECRET: "+secret);
         return JWT.create().withIssuer("Oriol").withAudience("Customer Magnet")
                 .withIssuedAt(new Date()).withSubject(String.valueOf(userPrincipal.getUser().getId()))
                 .withArrayClaim(AUTHORITIES, claims)

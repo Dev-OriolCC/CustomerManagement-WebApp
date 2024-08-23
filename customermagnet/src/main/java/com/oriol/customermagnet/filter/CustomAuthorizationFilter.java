@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-
 import static com.oriol.customermagnet.constant.Constants.PUBLIC_ROUTES;
 import static com.oriol.customermagnet.constant.Constants.TOKEN_PREFIX;
 import static com.oriol.customermagnet.utils.ExceptionUtils.processError;
@@ -60,9 +58,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         } else {
             return null;
         }
-//        return ofNullable(request.getHeader(AUTHORIZATION)
-//                .filter(header -> header.startsWith(TOKEN_PREFIX))
-//                .map(token -> token.replace(TOKEN_PREFIX, EMPTY)).get());
     }
 
 

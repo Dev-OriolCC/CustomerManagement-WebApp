@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
 import static com.oriol.customermagnet.utils.RequestUtils.getDevice;
 import static com.oriol.customermagnet.utils.RequestUtils.getIpAdress;
 

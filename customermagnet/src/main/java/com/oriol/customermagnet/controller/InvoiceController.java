@@ -1,4 +1,4 @@
-package com.oriol.customermagnet.resource;
+package com.oriol.customermagnet.controller;
 
 import com.oriol.customermagnet.domain.HttpResponse;
 import com.oriol.customermagnet.domain.Invoice;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/api/v1/invoice")
 @RequiredArgsConstructor
-public class InvoiceResource {
+public class InvoiceController {
     private final CustomerService customerService;
     private final InvoiceService invoiceService;
     private final UserService userService;
@@ -102,18 +102,4 @@ public class InvoiceResource {
                         .build());
     }
 
-//    @PutMapping("/addInvoice/{id}/to/{invoiceId}")
-//    public ResponseEntity<HttpResponse> addInvoiceToCustomer(@AuthenticationPrincipal UserDTO userDTO, @PathVariable("id") Long id, @PathVariable("invoiceId") Long invoiceId) {
-//        invoiceService.addInvoiceToCustomer(id, invoiceId);
-//        return ResponseEntity.ok().body(
-//                HttpResponse.builder()
-//                        .timestamp(LocalDateTime.now().toString())
-//                        .data(Map.of(
-//                                "user", userService.getUserByEmail(userDTO.getEmail())
-//                        ))
-//                        .message("Customer Retrieved")
-//                        .status(HttpStatus.OK)
-//                        .statusCode(HttpStatus.OK.value())
-//                        .build());
-//    }
 }

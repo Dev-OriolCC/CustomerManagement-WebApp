@@ -14,7 +14,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.InputStreamResource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -69,12 +68,11 @@ public class CustomerReport {
                 row.createCell(5).setCellValue(customer.getAddress());
                 row.createCell(6).setCellValue(customer.getPhone());
                 row.createCell(7).setCellValue(DateFormatUtils.format(customer.getCreatedAt(), "yyyy-MM-dd hh:mm:ss"));
-
             }
             workbook.write(out);
             return new InputStreamResource(new ByteArrayInputStream(out.toByteArray()));
         } catch (Exception exception) {
-            log.error("Unable to generate report"+exception);
+            log.error("Unable to generate report: "+exception);
             throw new ApiException("Unable to generate report");
         }
 

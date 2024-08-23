@@ -1,4 +1,4 @@
-package com.oriol.customermagnet.resource;
+package com.oriol.customermagnet.controller;
 
 import com.oriol.customermagnet.domain.Customer;
 import com.oriol.customermagnet.domain.HttpResponse;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/api/v1/customer")
 @RequiredArgsConstructor
-public class CustomerResource {
+public class CustomerController {
     private final CustomerService customerService;
     private final UserService userService;
 

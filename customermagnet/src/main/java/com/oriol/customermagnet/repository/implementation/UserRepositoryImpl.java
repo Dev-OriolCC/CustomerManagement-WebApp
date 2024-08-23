@@ -14,6 +14,7 @@ import com.oriol.customermagnet.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -54,24 +55,19 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
     private final EmailService emailService;
-
+    @Value("${ui.app.url}")
+    private String frontendURI;
     @Override
     public User create(User user) {
-        // 1. Check email
         if (checkEmailCount(user.getEmail().trim().toLowerCase()) > 0 ) throw new ApiException("Email already in use");
-        //2. Save new user
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             SqlParameterSource parameters = getSqlParameterSource(user);
             jdbc.update(INSERT_USER_QUERY, parameters, keyHolder);
             user.setId(requireNonNull(keyHolder.getKey()).longValue());
-            //3. Add role to user
             roleRepository.addRoleToUser(user.getId(), ROLE_USER.name());
-            //4. Send verf. url
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(),ACCOUNT.getType());
-            //5. Save url
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_QUERY,Map.of("user_id",user.getId(),"url",verificationUrl));
-            //6. Send email to user with url
             //emailService.sendVerificationEmail(user.getFirst_name(), user.getEmail(), verificationUrl, ACCOUNT);
             sendEmail(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
@@ -131,6 +127,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     }
 
     private String getVerificationUrl(String key, String type) {
+        //TODO: Change for frontend uri
         return "http://localhost:4200/api/v1/user/verify/"+type.toLowerCase()+"/"+key;
         //return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/user/verify/"+type+"/"+key).toUriString();
     }
@@ -245,7 +242,6 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     public void renewPassword(Long userId, String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) throw new ApiException("Passwords don't match!");
         try {
-            //jdbc.update(DELETE_RESET_PASSWORD_URL_BY_USER_ID_QUERY,Map.of("id",user.getId()));
             //TODO: CHECK
             System.out.println("userId"+ userId);
             System.out.println("password"+ encoder.encode(password));
@@ -376,6 +372,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     private Boolean isLinkExpired(String key, VerificationType verificationType) {
         try {
             System.out.println("URL"+getVerificationUrl(key, verificationType.getType()));
+            //TODO: Change for frontend uri
             String url = "http://localhost:4200/api/v1/user/verify/"+verificationType.getType().toLowerCase()+"/"+key;
             System.out.println("Temp Url: "+ url);
             //return jdbc.queryForObject(SELECT_EXPIRATION_BY_URL_QUERY, Map.of("url", getVerificationUrl(key, verificationType.getType())), Boolean.class);

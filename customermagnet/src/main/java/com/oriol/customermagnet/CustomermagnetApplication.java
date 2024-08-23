@@ -17,17 +17,9 @@ import java.util.List;
 @SpringBootApplication
 public class CustomermagnetApplication {
 	private static final int STRENGTH = 12;
-	@Value("${spring.mail.username}")
-	private static String username;
-
-	@Value("${spring.mail.password}")
-	private static String password;
 
 	public static void main(String[] args) {
-		System.out.println("********* USERNAME: "+username);
-		System.out.println("********* PASSWORD: "+password);
 		SpringApplication.run(CustomermagnetApplication.class, args);
-
 	}
 
 	@Bean
