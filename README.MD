@@ -33,8 +33,9 @@ Database
 
 
 ## Demo
+![App Screenshot](demo/customer_demo1.gif)
 
-Insert gif or link to demo
+
 
 
 Thanks for reading! =)

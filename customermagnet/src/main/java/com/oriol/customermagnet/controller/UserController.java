@@ -66,7 +66,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> create(@RequestBody @Valid User user) {
-        System.out.println("YES");
         UserDTO userDTO = userService.createUser(user);
         return ResponseEntity.created(getUri()).body(
                 HttpResponse.builder()
@@ -79,8 +78,8 @@ public class UserController {
     }
     @GetMapping("/profile")
     public ResponseEntity<HttpResponse> profile(Authentication authentication) {
-        //UserDTO userDTO = userService.getUserByEmail(getAuthenticatedUser(authentication).getEmail());
-        UserDTO userDTO = userService.getUserByEmail("walterwhite@hotmail.com");
+        UserDTO userDTO = userService.getUserByEmail(getAuthenticatedUser(authentication).getEmail());
+        //UserDTO userDTO = userService.getUserByEmail("walterwhite@hotmail.com");
 
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
