@@ -1,7 +1,6 @@
 package com.oriol.customermagnet.repository;
 
 import com.oriol.customermagnet.domain.Role;
-import com.oriol.customermagnet.domain.User;
 
 import java.util.Collection;
 

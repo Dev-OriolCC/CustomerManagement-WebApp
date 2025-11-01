@@ -5,7 +5,6 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpResponse,
-  HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, of, tap} from 'rxjs';
 import { HttpCacheService } from '../service/http.cache.service';
@@ -47,7 +46,6 @@ export class CacheInterceptor implements HttpInterceptor {
           }
         })
       )
-    //throw new Error('Method not implemented.');
   }
 
 }
